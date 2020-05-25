@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: va-mytrips-web-configmap
+data:
+  ASPNETCORE_ENVIRONMENT: Development
+  GRPC_Proxy: http://52.170.170.20:80

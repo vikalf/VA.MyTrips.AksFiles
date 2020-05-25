@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: va-mytrips-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: va-mytrips-web
+  template:
+    metadata:
+      labels:
+        app: va-mytrips-web
+    spec:
+      nodeSelector:
+        "beta.kubernetes.io/os": linux
+      containers:
+      - name: va-mytrips-web
+        image: vikalf/va.mytrips.web:master-9a3c5616
+        env:
+          - name: ASPNETCORE_ENVIRONMENT
+            valueFrom:
+              configMapKeyRef:
+                name: va-mytrips-web-configmap
+                key: ASPNETCORE_ENVIRONMENT
+          - name: GRPC_Proxy
+            valueFrom:
+              configMapKeyRef:
+                name: va-mytrips-web-configmap
+                key: GRPC_Proxy
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 250m
+            memory: 256Mi
+        ports:
+        - containerPort: 80
+          name: http

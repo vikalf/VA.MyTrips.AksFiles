@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: va-mytrips-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: va-mytrips-service
+  template:
+    metadata:
+      labels:
+        app: va-mytrips-service
+    spec:
+      nodeSelector:
+        "beta.kubernetes.io/os": linux
+      containers:
+      - name: va-mytrips-service
+        image: vikalf/va.mytrips.service:master-7c5e9336
+        env:
+          - name: ASPNETCORE_ENVIRONMENT
+            valueFrom:
+              secretKeyRef:
+                name: va-mytrips-service-secrets
+                key: ASPNETCORE_ENVIRONMENT
+          - name: STORAGE_BLOB_BASE_URL
+            valueFrom:
+              secretKeyRef:
+                name: va-mytrips-service-secrets
+                key: STORAGE_BLOB_BASE_URL
+          - name: COSMOS_DB
+            valueFrom:
+              secretKeyRef:
+                name: va-mytrips-service-secrets
+                key: COSMOS_DB
+          - name: COSMOS_DB_KEY
+            valueFrom:
+              secretKeyRef:
+                name: va-mytrips-service-secrets
+                key: COSMOS_DB_KEY
+          - name: STORAGE_ACCOUNT_CONNECTION_STRING
+            valueFrom:
+              secretKeyRef:
+                name: va-mytrips-service-secrets
+                key: STORAGE_ACCOUNT_CONNECTION_STRING
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 250m
+            memory: 256Mi
+        ports:
+        - containerPort: 80
+          protocol: TCP
